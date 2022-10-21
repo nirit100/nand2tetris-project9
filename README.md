@@ -8,9 +8,9 @@ I aimed at creating a game for the Hack-platform that is not only a good demonst
 
 You can find my original assignment README in the `GUIDE.txt` file -- it's in German, though. Otherwise the most important things are explained in-game.
 
-![screenshot of a fresh board](Screenshot1.png "a fresh round")
+![screenshot of a fresh board](/Screenshot1.png)
 
-![screenshot of a board with a few opened cards](Screenshot2.png "some opened cards")
+![screenshot of a board with a few opened cards](/Screenshot2.png)
 
 ## How to run
 
