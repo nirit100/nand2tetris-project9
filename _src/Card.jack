@@ -1,0 +1,106 @@
+/*
+ * NAND2TETRIS PROJECT 9 -- Card.jack -- Nico Rittinghaus -- HHU Düsseldorf
+ *
+ * This file is part of my personal solution for project 9 of the NAND2TETRIS 
+ * course. Feel free to look through it and modify it *for personal use* and 
+ * fun. I believe in your integrity to not steal my work.
+ */
+
+/**
+ * An object of this class represents a single playing card with a value, 
+ * a state of being open or closed and memoing functionality.
+ */
+class Card {
+
+    /* fields and construction */
+
+    // constants
+
+    // game data
+    field int value;        // 0=VOLTORB, others=#COINs
+    field boolean open;     // true means face up
+    field Array memo;       // boolean array - see value for index key
+
+    /**
+     * constructs a card with memo array and givan value
+     */
+    constructor Card new(int newValue) {
+        let value = newValue;
+        let open = false;
+        let memo = Array.new(4);
+        do erazeMemo();
+        return this;
+    }
+
+    /**
+     * disposes card, including memo array
+     */
+    method void dispose() {
+        do memo.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /* public facing methods */
+
+    /**
+     * Returns the card's value
+     */
+    method int getValue() {
+        return value;
+    }
+
+    /**
+     * True iff the memo flag for value is set
+     * (0=VOLTORB, 1..3=COINs)
+     */
+    method boolean hasMemo(int value) {
+        var boolean memoVal;
+        let memoVal = memo[value];
+        return memoVal;
+    }
+
+    /**
+     * Toogles the memo flag for value on/off
+     * depending on current value
+     * (0=VOLTORB, 1..3=COINs)
+     */
+    method boolean toggleMemo(int value) {
+        var boolean notMemoVal;
+        let notMemoVal = ~memo[value];    // invert
+        let memo[value] = notMemoVal;
+        return notMemoVal;
+    }
+
+    /**
+     * Erazes all memos set on the card
+     * (all false)
+     */
+    method void erazeMemo() {
+        let memo[0] = false;
+        let memo[1] = false;
+        let memo[2] = false;
+        let memo[3] = false;
+        return;
+    }
+
+    /**
+     * Returns true iff the card is open (facing up, showing value)
+     */
+    method boolean isOpen() {
+        var boolean isOpen;
+        let isOpen = open;
+        return isOpen;
+    }
+
+    /**
+     * Opens the card (so that isOpen() will return true)
+     */
+    method boolean open() {
+        var boolean wasOpen;
+        let wasOpen = open;
+        let open = true;
+        return ~wasOpen;    // true if open changed
+    }
+
+}

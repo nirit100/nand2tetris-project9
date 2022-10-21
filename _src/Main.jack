@@ -1,0 +1,31 @@
+/*
+ * NAND2TETRIS PROJECT 9 -- Main.jack -- Nico Rittinghaus -- HHU Düsseldorf
+ *
+ * This file is part of my personal solution for project 9 of the NAND2TETRIS
+ * course. Feel free to look through it and modify it *for personal use* and
+ * fun. I believe in your integrity to not steal my work.
+ */
+
+class Main {
+
+    function void main() {
+        var Game game;
+        var DrawModule drawer;
+        // create draw module and draw logo
+        let drawer = DrawModule.new();
+        do drawer.drawLogoScreen();
+        do Sys.wait(200);
+        //do Keyboard.readChar();
+        // now play game indefinitely
+        while (true) {
+            let game = Game.new(drawer);
+            do game.title();
+            do game.play();
+            do game.fin();
+            do game.dispose();
+        }
+        do drawer.dispose();
+        return;
+    }
+
+}

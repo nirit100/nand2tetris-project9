@@ -1,0 +1,191 @@
+
+       /########################\
+       |####  VOLTORB FLIP  ####|
+       \########################/
+
+  Eine Mischung aus Minesweeper und Picross.
+  Das Original dieses Minispiels ist in
+  Pokémon HeartGold und SoulSilver in der
+  Game Corner anstelle einer ursprünglich
+  vorgesehenen Slot Machine erschienen, da
+  der US-Amerikanische Jugenschutz etwas
+  dagegen hatte. Also hat man kurzerhand
+  VOLTORB FLIP erfunden. Anschließend machte
+  das Spiel nie wieder einen offiziellen
+  Auftritt, obwohl die Menge der im Browser
+  und für sämtliche Mobilplattformen
+  verfügbaren Ripoffs und Kopien auf großes
+  Interesse an diesem doch (meiner Meinung
+  nach) recht interessanten kleinen Spiel
+  auf Interesse an einer Rückkehr dessen
+  schließen lassen könnte.
+
+  ## ZU DIESEM EXEMPLAR
+
+  Es handelt sich um ein voll funktionsfähi-
+  ges Spiel mit zufällig generierten Levels,
+  steigender Schwierigkeit, allerdings auch
+  mit leicht geänderten Regeln. Diese sind
+  im  TITELBILDSCHIRM  auch kurz zusammen-
+  gefasst. In der Sektion  "REGELN"  unten
+  sind sie etwas ausführlicher (und auf
+  Deutsch) nachzulesen.
+  Ich habe viel Arbeit in die Entwicklung
+  des Gameplays und ins Balancing gesteckt
+  und würde mich freuen, wenn das Spiel
+  tatsächlich auch gespielt wird. Ich
+  verstehe aber natürlich, wenn dafür die
+  Zeit fehlt.
+  Trotzdem: Viel Spaß! :)
+
+  ## REGELN
+
+  Zu Beginn der RUNDE (d.h. in jedem Level)
+  erhälst Du ein 5x5-Gitter von Karten. Jede
+  Karte hat entweder einen Wert in MÜNZEN
+  (1 bis 3) oder ein VOLTORB.
+  Die VOLTORBS sind sowas wie die Minen in
+  Minesweeper -- sie explodieren, wenn Du
+  sie aufdeckst. Nicht machen.
+  ZIEL ist es, stattdessen alle 2- und 3-
+  Münz-Karten aufzudecken, und dabei keine
+  VOLTORBS und möglichst wenig 1er-Karten
+  aufzudecken.
+  Um das zu bewerkstelligen bekommst du für
+  jede ZEILE und für jede SPALTE die Anzahl
+  der VOLTORBS, sowie die Summe der MÜNZEN
+  angezeigt. Mithilfe dieser Angaben kannst
+  du versuchen, die Karten in strategischer
+  Reihenfolge aufzudecken.
+
+  Für jede 2-Münz-Karte erhälst Du zwei, für
+  jede 3-Münz-Karte drei Münzen. Ich weiß,
+  kompliziert. Dagegen bekommst Du für
+  1-Münz-Katren beim Aufdecken *keine*
+  Münzen. Stattdessen bekommst Du doppelt so
+  viele Münzen, wenn du weniger als vier
+  1-Münz-Karten aufdeckst. Das lohnt sich!
+
+  Mit Aufdecken eines VOLTORBS verlierst Du
+  die Runde und damit ein HERZ. Hast Du
+  keine Herzen mehr, heißt es GAME OVER.
+  Sind alle 2er und 3er aufgedeckt, ist
+  das Level geschafft, und Du erhälst ggf.
+  ein Herz zurück.
+  In jedem sechzehnten Level, beginnend bei
+  Level 8, bekommst Du einen Herzcontainer,
+  das heißt das Maximum an HERZEN wird von
+  den anfänglichen zwei langsam erhöht.
+
+  ## BEDIENUNG
+
+  Die wichtigsten Controls sind im Programm
+  rechts aufgelistet. Allerdings ist folgen-
+  des im Voraus gut zu wissen:
+
+   - Die Benutzeroberfläche in Kürze:
+     Wenn man gerade freie Sicht auf die
+     Karten hat, sieht man
+      * Die Karten links mittig, rechts und
+        unten je die Summen von Münzen und
+        VOLTORBs
+      * Am oberen Rand links Herzen
+        (derzeitige Anzahl und darunter
+        Maximum)
+      * Rechts daneben Münz-Punktestand
+        (oben insgesamt, darunter derz.
+        Level)
+      * Am unteren Rand Level, Modus,
+        ausgewählte Karte und Markierungen
+        der ausgewählten Karte
+      * In der rechten Bildhälfte die
+        Steuerung in Kürze
+
+   - Tastenbelegung im FLIP-Modus:
+      * W/A/S/D Karte auswählen
+                (alternativ Pfeiltasten)
+      * SPACE   Karte aufdecken
+      * H       Kurzanleitung/Titelbild-
+                schirm anzeigen
+      * ESC     Reset zu Level 1
+      * M       Modus wechseln
+
+   - Mit M wechselt man in den MEMO-Modus.
+     So kann man - ähnlich wie bei Sudoku -
+     Karten markieren, wenn man etwas
+     Bestimmtes darunter vermutet.
+     Mit derselben Taste wechselt man auch
+     wieder in den FLIP-Modus zurück.
+     Man kann so jede Karte als 1, 2, 3 oder
+     VOLTORB markieren.
+     Der Modus lässt sich auch mit den Ak-
+     tionstasten wechseln - mit 1, 2, 3 oder
+     0 kann man in den Memo-Modus, und mit
+     SPACE wieder zurück wechseln.
+     Wozu die Unterscheidung zwischen FLIP-
+     und MEMO-Modus? Schutz vor dummen, vor-
+     eiligen Entscheidungen.
+
+   - Tastenbelegung im MEMO-Modus:
+      * W/A/S/D wie gehabt
+                (alternativ Pfeiltasten)
+      * 0/1/2/3 Markierung setzen/löschen
+                (0=VOLTORB, alternativ V)
+      * C       Alle Markierungen für Karte
+                löschen
+
+   - Immer wenn eine Eingabe durch den
+     Spieler erwartet wird, ist unten links
+     der Cursor zu sehen.
+
+  ## TIPPS
+
+  Zeilen und Spalten ohne VOLTORBS sind ein
+  guter Startpunkt, da sie ohne Risiko sind.
+  Zeilen und Spalten, bei denen die Summe
+  von VOLTORBS und Münzen genau 5 ergibt,
+  können nicht von Interesse sein, denn
+  dort gibt es nur 1-Münz-Karten und
+  VOLTORBs.
+  Manchmal muss man raten. Dafür sind die
+  Herzen da. Hust Konami hust. Trotzdem
+  sollte man vorher sicherstellen, dass man
+  nicht noch irgendwas übersehen hat.
+
+  Wenn Du schlechte Augen hast: Die
+  Markierungen der gerade ausgewählten Kar-
+  te werden auch unten rechts angezeigt.
+
+  ## CHEAT CODES & SONDERTASTEN
+
+  Ja, es gibt Cheat-Codes. Diese Liste ist
+  unvollständig.
+   * PAGE-DOWN  Zeige alle Karten an
+                (ändert nichts, zeichnet
+                 aber die Unterseite aller
+                 Karten)
+   * PAGE-UP    Instant Win
+   * F5         Zeichne alles neu
+                (falls es mal Probleme gibt)
+
+  ## PRNG
+
+  Der Startbildschirm mit der Anleitung wird
+  zur Generierung des PRNG-Seeds benutzt.
+  Der PRNG ist der aus dem Rocket.Chat.
+  Dieser ist dämlich und generiert je nach
+  Seed sehr unterschiedlich gute Sequenzen.
+  Im Zweifelsfall hilft die ESC-Taste.
+
+  ## Schlusswort
+
+  Das wär's, denk ich. Viel Spaß beim
+  Spielen.
+  Bei Fragen bin ich unter meiner E-Mail-
+  Adresse erreichbar.
+
+  Mit freundlichen Grüßen,
+
+  Nico Rittinghaus
+  nirit100@hhu.de
+                                         ~BA

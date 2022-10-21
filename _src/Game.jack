@@ -1,0 +1,595 @@
+/*
+ * NAND2TETRIS PROJECT 9 -- Game.jack -- Nico Rittinghaus -- HHU Düsseldorf
+ *
+ * This file is part of my personal solution for project 9 of the NAND2TETRIS
+ * course. Feel free to look through it and modify it *for personal use* and
+ * fun. I believe in your integrity to not steal my work.
+ */
+
+/**
+ * Represents a game with all its states and logic inside, from first level to game over.
+ * Handles everything from input processing over data structure management
+ * (board generation/disposition to actual playing and game logic.
+ */
+class Game {
+
+    /* statics */
+
+    static int konami;
+
+    /* fields and construction */
+
+    // internals
+    field DrawModule drawer;
+    field int selectedCard;
+    field int mode;     // 0=default, 1=memo
+    field int remainingRelevantCoin;
+
+    // game data
+    field int coin;
+    field int level;
+    field int hearts;
+    field int maxHearts;
+    field Array cards;
+
+    /**
+     * Sets up a new game with everything in it, starting at
+     * level 1 with 0 coins total, etc.
+     * Supposed lifetime: Until Game Over.
+     * drawModule:  DrawModule to be used for graphics
+     */
+    constructor Game new(DrawModule drawModule) {
+        let maxHearts = 2;
+        let cards = Array.new(25);
+        let drawer = drawModule;
+        let coin = 0;
+        let level = 1;
+        let selectedCard = 13-1;
+        return this;
+    }
+
+    /**
+     * Destroys the Game object with everything in it,
+     * except the drawer (DrawModule).
+     */
+    method void dispose() {
+        // don't dispose drawer as its injected into constructor
+        //do drawer.dispose();
+        // Array cards contents should have been disposed in playRound()
+        do cards.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /* public facing methods and functions */
+
+    /**
+     * Displays the title screen (how to play screen)
+     * and sets the random seed depending on wait time
+     */
+    method void title() {
+        // prepare random seed
+        var int randomSeed;
+        let randomSeed = 1;
+        // draw start screen and count seed
+        do drawer.clearScreen();
+        do drawer.titleScreen();
+        while (~Keyboard.keyPressed()) {
+            let randomSeed = randomSeed + 1;
+        }
+        // print the seed and show it for a moment
+        do Output.moveCursor(22, 0);
+        do Output.printInt(randomSeed);
+        do Sys.wait(500);
+        do Random.setSeed(randomSeed);
+        return;
+    }
+
+    /**
+     * Plays the game until Game Over
+     */
+    method void play() {
+        // play rounds until no hearts left
+        var int coinThisRound;
+        var boolean heartRefilled, heartWon;
+        let hearts = maxHearts;
+        while (hearts > 0) {
+            // play a round
+            let coinThisRound = playRound();
+            // examine result
+            if (coinThisRound > 0) {
+                // WON THE ROUND
+                let heartRefilled = false;
+                let heartWon = false;
+                // refill heart
+                if (hearts < maxHearts) {
+                    let hearts = hearts + 1;
+                    let heartRefilled = true;
+                }
+                // add one max heart every 16 levels, starting at 8
+                if (((level & 8) = 8) & ((level & 7) = 0)) {
+                    // level % 8 == 0
+                    let maxHearts = maxHearts + 1;
+                    let heartWon = true;
+                }
+                // redraw relevant screen and "You Won!" screen
+                do drawer.drawModeText(100, selectedCard);
+                do drawer.drawCoin(coin, coinThisRound);
+                do Sys.wait(2000);
+                do drawer.winScreen(coinThisRound, heartRefilled, heartWon);
+                let coin = coin + coinThisRound;
+                // wait for input
+                do drawer.removeCursor();
+                do Keyboard.readChar();
+                do drawer.removeCursor();
+                // on to the next level
+                let level = level + 1;
+            } if (coinThisRound = 0) {
+                // LOST THE ROUND
+                // redraw relevant screen and "You Lost!" screen
+                do drawer.drawModeText(101, selectedCard);
+                do drawer.drawCoin(coin, coinThisRound);
+                do Sys.wait(2000);
+                do drawer.loseScreen();
+                let hearts = hearts - 1;
+                // wait for input
+                do drawer.removeCursor();
+                do Keyboard.readChar();
+                do drawer.removeCursor();
+            } if (coinThisRound = -1) {
+                // player hit ESC -- reset
+                do drawer.drawModeText(101, selectedCard);
+                let hearts = 0;
+            }
+        }
+        return;
+    }
+
+    /**
+     * Displays the Game Over screen
+     */
+    method void fin() {
+        do drawer.clearScreen();
+        do drawer.finScreen(coin, level);
+        do Keyboard.readChar();
+        return;
+    }
+
+    /* internal methods */
+
+    /**
+     * Plays a round (until won or lost)
+     * Does not affect global state except memos and
+     * selectedCard. Already includes bonus coin logic.
+     * Handles everything input/output and computation
+     * related.
+     * Returns the number of coins earned in the round,
+     * where 0 should be interpreted as "lost".
+     */
+    method int playRound() {
+        var int coinThisRound, bonusCoinThisRound;
+        var boolean endOfRound;
+        var char input;
+        var int oldSelectedCard;    // remember old index to avoid unnecessary redraws
+        var boolean redrawCards, redrawScreen;    // redraw flags
+        var Card currentCard;
+        do drawer.clearScreen();
+        do generateField();
+        let selectedCard = 13-1;
+        let endOfRound = false;
+        let redrawCards = false;
+        let redrawScreen = false;
+        let coinThisRound = 0;
+        let bonusCoinThisRound = countCardValue(1, cards, true, true);
+        let currentCard = cards[selectedCard];
+        // draw everything initially
+        do drawer.clearScreen();
+        do drawer.drawHearts(hearts, maxHearts);
+        do drawer.drawCoin(coin, coinThisRound);
+        do drawer.drawLevelText(level);
+        do drawer.drawModeText(mode, selectedCard);
+        do drawer.drawField(cards, selectedCard);
+        do drawer.drawHelpText(mode);
+        do drawer.drawFieldMemoDisplay(currentCard);
+        // enter player interaction loop
+        while (~endOfRound) {
+            let oldSelectedCard = selectedCard;
+            do drawer.removeCursor();
+            let input = Keyboard.readChar();
+            do drawer.removeCursor();
+            // manage selected card
+            if ((input = 87) | (input = 131)) {     // W / ^
+                let selectedCard = selectedCard - 5;
+                let redrawCards = true;
+            } if ((input = 65) | (input = 130)) {   // A / <-
+                let selectedCard = selectedCard - 1;
+                let redrawCards = true;
+            } if ((input = 83) | (input = 133)) {   // S / v
+                let selectedCard = selectedCard + 5;
+                let redrawCards = true;
+            } if ((input = 68) | (input = 132)) {   // D / ->
+                let selectedCard = selectedCard + 1;
+                let redrawCards = true;
+            }
+            if (selectedCard < 0) {
+                let selectedCard = selectedCard + 25;
+            }
+            if (selectedCard > 24) {
+                let selectedCard = selectedCard - 25;
+            }
+            let currentCard = cards[selectedCard];
+            // redraw cards? This code appears again later but is present
+            //   here too for faster response
+            if (redrawCards) {
+                do drawer.drawSingleCard(currentCard, selectedCard, true);
+                if (~(selectedCard = oldSelectedCard)) {
+                    do drawer.drawSingleCard(cards[oldSelectedCard], oldSelectedCard, false);
+                }
+                do drawer.drawFieldMemoDisplay(currentCard);
+                do drawer.drawModeText(mode, selectedCard);
+                let redrawCards = false;
+            }
+            // cheat codes
+            if (input = 137) {  // PAGE DOWN (cheat: show board)
+                do drawer.drawFieldAllOpen(cards, selectedCard);
+            }
+            if (input = 136) {  // PAGE UP (cheat: instant win)
+                let coinThisRound = coinThisRound + remainingRelevantCoin;
+                let endOfRound = true;
+            }
+            if (input = 145) {  // F5
+                let redrawScreen = true;
+            }
+            // rest goes according to mode
+            if (mode = 0) {
+                // FLIP mode
+                if (input = 32) {   // space
+                    // flip card
+                    do drawer.cardFlipAnimation(currentCard, selectedCard);
+                    if (currentCard.getValue() = 0) {
+                        // VOLTORB
+                        do currentCard.open();
+                        let coinThisRound = 0;
+                        let endOfRound = true;
+                    } else {
+                        // COINs
+                        if (~currentCard.isOpen()) {
+                            do currentCard.open();
+                            if (currentCard.getValue() > 1) {
+                                let coinThisRound = coinThisRound + currentCard.getValue();
+                                do drawer.drawCoin(coin, coinThisRound);
+                                let remainingRelevantCoin = remainingRelevantCoin - currentCard.getValue();
+                            } if (currentCard.getValue() = 1) {
+                                let bonusCoinThisRound = bonusCoinThisRound - 1;
+                            }
+                        }
+                        let redrawCards = true;
+                    }
+                } if (input = 72) { // H
+                    // show title screen
+                    do drawer.titleScreen();
+                    do Keyboard.readChar();
+                    do drawer.removeCursor();
+                    let redrawScreen = true;
+                } if ((input = 77) | (input = 48) | (input = 49) | (input = 50) | (input = 51)) { // M
+                    // enter memo mode
+                    let mode = 1;
+                    do drawer.drawModeText(mode, selectedCard);
+                    do drawer.drawHelpText(mode);
+                } if (input = 140) {// ESC
+                    // end this round
+                    let endOfRound = true;
+                    let coinThisRound = -1;
+                }
+            } else { if (mode = 1) {
+                // MEMO mode
+                if ((input = 77) | (input = 32)) {   // M / space
+                    // enter flip mode
+                    let mode = 0;
+                    do drawer.drawModeText(mode, selectedCard);
+                    do drawer.drawHelpText(mode);
+                } if (input = 67) { // C
+                    // clear memos
+                    do currentCard.erazeMemo();
+                    let redrawCards = true;
+                } if ((input = 48) | (input = 86)) { // 0 / V
+                    do currentCard.toggleMemo(0);
+                    let redrawCards = true;
+                } if (input = 49) { // 1
+                    do currentCard.toggleMemo(1);
+                    let redrawCards = true;
+                } if (input = 50) { // 2
+                    do currentCard.toggleMemo(2);
+                    let redrawCards = true;
+                } if (input = 51) { // 3
+                    do currentCard.toggleMemo(3);
+                    let redrawCards = true;
+                }
+            }}
+            // redraw cards (second time, eh)
+            if (redrawCards) {
+                do drawer.drawModeText(mode, selectedCard);
+                do drawer.drawSingleCard(currentCard, selectedCard, true);
+                if (~(selectedCard = oldSelectedCard)) {
+                    do drawer.drawSingleCard(cards[oldSelectedCard], oldSelectedCard, false);
+                }
+                do drawer.drawFieldMemoDisplay(currentCard);
+                let redrawCards = false;
+            }
+            // easter egg
+            if (Game.konami(input)) {
+                do drawer.drawKonami();
+                do Keyboard.readChar();
+                do drawer.removeCursor();
+                let redrawScreen = true;
+                let maxHearts = maxHearts + 1;
+            }
+            // redraw complete screen
+            if (redrawScreen) {
+                do drawer.clearScreen();
+                do drawer.drawHearts(hearts, maxHearts);
+                do drawer.drawCoin(coin, coinThisRound);
+                do drawer.drawLevelText(level);
+                do drawer.drawModeText(mode, selectedCard);
+                do drawer.drawField(cards, selectedCard);
+                do drawer.drawHelpText(mode);
+                do drawer.drawFieldMemoDisplay(currentCard);
+                let redrawScreen = false;
+            }
+            // found all coin?
+            if (remainingRelevantCoin < 1) {
+                let endOfRound = true;
+            }
+        }
+        // add bonus coin
+        if (coinThisRound > 0) {
+            let coinThisRound = coinThisRound + bonusCoinThisRound;
+            if (countCardValue(1, cards, true, false)-bonusCoinThisRound < 4) {
+                let coinThisRound = coinThisRound * 2;
+            }
+        }
+        // show player the field before destroying it
+        do drawer.cardFlipAnimationForRemainingCards(cards);
+        do drawer.drawFieldAllOpen(cards, -1);
+        // clean up
+        do destroyField();
+        return coinThisRound;
+    }
+
+    /**
+     * Generates the one playing field randomly,
+     * depending on current Level number.
+     */
+    method void generateField() {
+        /*
+         * General idea:
+         * Generate the cards in segments, meaning chunks of a card
+         * type t at a time.
+         * For each card type t expept 1COIN, there is a budget b(t)
+         * and a(t) minimum m.
+         * The algorithm will generate at least m(t) cards for each
+         * type t. After the minimum has been reached, there is
+         * a probability of 1/(b(t)-m(t)) of switching to the next
+         * segment (and therefore card type).
+         * The deck will be filled to 25 with 1COINs.
+         * The order of generation is VOLTORB, 2COINs, 3COINs, 1COIN.
+         * In the end, the cards will be shuffled.
+         */
+        // loop index & pointer
+        var int i;
+        var int segment;    // new card's value
+        var int newValue;
+        var int stayInSegment;
+        // set up budgets and base values
+        var int minimum_1s;
+        var int minimum_voltorbs;
+        var int minimum_2s;
+        var int minimum_3s;
+        var int budget_voltorbs;
+        var int budget_2s;
+        var int budget_3s;
+        let minimum_1s = 5;
+        let minimum_voltorbs = 5;
+        let minimum_2s = 3;
+        let minimum_3s = 2;
+        let budget_voltorbs = 5;
+        let budget_2s = 5;
+        let budget_3s = 3;
+        let remainingRelevantCoin = 0;
+        // adjust budgets/minima for level
+        if (level < 17) {
+            let budget_voltorbs = budget_voltorbs + ((level+1) / 2);
+            let budget_2s = budget_2s + ((level+1) / 4);
+            let budget_3s = budget_3s + ((level+1) / 4);
+        } else {
+            let budget_voltorbs = budget_voltorbs + 8;
+            let budget_2s = budget_2s + 5;
+            let budget_3s = budget_3s + 5;
+        }
+        if (level > 7) {
+            let minimum_voltorbs = minimum_voltorbs + 2;
+            let minimum_2s = minimum_2s + 1;
+            let minimum_3s = minimum_3s + 1;
+            let minimum_1s = minimum_1s - 1;
+        }
+        // generate each card, in segmented order
+        let segment = 0;
+        let i = 24;
+        while (i > -1) {
+            // determine value of new card
+            let newValue = segment;
+            if (segment = 0) {
+                // VOLTORB
+                // decrease counters
+                let minimum_voltorbs = minimum_voltorbs - 1;
+                let budget_voltorbs = budget_voltorbs - 1;
+                // calculate transition to next segment
+                if (minimum_voltorbs < 1) {
+                    let stayInSegment = Random.randRange(budget_voltorbs);
+                    if (stayInSegment = 0) {
+                        let segment = 2;
+                    }
+                }
+                // adjust budget for better probabilities on crunch
+                if (budget_voltorbs > (i - (minimum_1s + minimum_2s + minimum_3s))) {
+                    let budget_voltorbs = i - (minimum_2s + minimum_3s);
+                }
+            } else { if (segment = 2) {
+                // 2 COINs
+                let remainingRelevantCoin = remainingRelevantCoin + 2;
+                // decrease counters
+                let minimum_2s = minimum_2s - 1;
+                let budget_2s = budget_2s - 1;
+                // calculate transition to next segment
+                if (minimum_2s < 1) {
+                    let stayInSegment = Random.randRange(budget_2s);
+                    if (stayInSegment = 0) {
+                        let segment = 3;
+                    }
+                }
+                // adjust budget for better probabilities on crunch
+                if (budget_2s > (i - (minimum_1s + minimum_3s))) {
+                    let budget_2s = i - minimum_3s;
+                }
+            } else { if (segment = 3) {
+                    // 3 COINs
+                    let remainingRelevantCoin = remainingRelevantCoin + 3;
+                    // decrease counters
+                    let minimum_3s = minimum_3s - 1;
+                    let budget_3s = budget_3s - 1;
+                    // calculate transition to next segment
+                    if (minimum_3s < 1) {
+                        let stayInSegment = Random.randRange(budget_3s);
+                        if (stayInSegment = 0) {
+                            let segment = 1;
+                        }
+                    }
+                    // adjust budget for better probabilities on crunch
+                    if (budget_3s > (i - minimum_1s)) {
+                        let budget_3s = i - minimum_1s;
+                    }
+            }}}
+            // generate actual card
+            let cards[i] = Card.new(newValue);
+            let i = i - 1;
+        }
+        // now shuffle the cards
+        let i = Random.randRange(4) + 4; // number of shuffles
+        while (i > 0) {
+            do shuffleDeck();
+            let i = i - 1;
+        }
+        return;
+    }
+
+    /**
+     * Destroys the playing field (the cards only).
+     * Array itself is to be disposed when Game is disposed,
+     * not now
+     */
+    method void destroyField() {
+        var int i;
+        var Card card;
+        let i = 0;
+        while (i < 25) {
+            let card = cards[i];
+            do card.dispose();
+            let i = i + 1;
+        }
+        // Array itself is to be disposed
+        //  when Game is disposed, not now
+        return;
+    }
+
+    /**
+     * This one is weird. Counts the cards with the
+     * given value present in the field.
+     * type         Type of the cards to be counted.
+     *              0=VOLTORB, 1-3=COINs
+     * cards        Current playing field array
+     * countAsOne   If true, each card is counted as 1,
+     *              regardless of type; otherwise for each
+     *              card its value will be counted
+     */
+    method int countCardValue(int type, Array cards, boolean countAsOne, boolean onlyUnopened) {
+        var Card currentCard;
+        var int currentCardValue;
+        var int i;
+        var int ret, cardVal;
+        if (countAsOne) {
+            let cardVal = 1;
+        } else {
+            let cardVal = type;
+        }
+        let ret = 0;
+        let i = 0;
+        while (i < 25) {
+            let currentCard = cards[i];
+            let currentCardValue = currentCard.getValue();
+            if (currentCardValue = type) {
+                if (~onlyUnopened | (onlyUnopened & ~currentCard.isOpen())) {
+                    let ret = ret + cardVal;
+                }
+            }
+            let i = i + 1;
+        }
+        return ret;
+    }
+
+    /* internal methods */
+
+    /**
+     * Fisher-Yates-Shuffle
+     */
+    method void shuffleDeck() {
+        var int i;
+        var int j;
+        var Card tmp;
+        let i = 25;
+        while (i > 1) {
+            let i = i - 1;
+            let j = Random.randRange(i);
+            let tmp = cards[i];
+            let cards[i] = cards[j];
+            let cards[j] = tmp;
+        }
+        return;
+    }
+
+    /* internal functions */
+
+    /**
+     * well... try it yourself.
+     */
+    function boolean konami(char c) {
+        // do this weird thing to save performance
+        if (((konami = 0) | (konami = 1)) & (c = 131)) {
+            // UP
+            let konami = konami + 1;
+            return false;
+        } else { if ((konami = 2) | (konami = 3) & (c = 133)) {
+            // DOWN
+            let konami = konami + 1;
+            return false;
+        } else { if ((konami = 4) | (konami = 6) & (c = 130)) {
+            // LEFT
+            let konami = konami + 1;
+            return false;
+        } else { if ((konami = 5) | (konami = 7) & (c = 132)) {
+            // RIGHT
+            let konami = konami + 1;
+            return false;
+        } else { if ((konami = 8) & (c = 66)) {
+            // B
+            let konami = konami + 1;
+            return false;
+        } else { if ((konami = 9) & (c = 65)) {
+            // A
+            let konami = konami + 1;
+            return true;
+        }}}}}}
+        let konami = 0;
+        return false;
+    }
+
+}

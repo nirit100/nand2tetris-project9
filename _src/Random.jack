@@ -1,0 +1,46 @@
+/* Random.jack
+ * By Mark Armbrust
+ * http://nand2tetris-questions-and-answers-forum.32033.n3.nabble.com/Random-number-generator-for-hack-cpu-td4025503.html
+ * Also see:
+ * http://nand2tetris-questions-and-answers-forum.32033.n3.nabble.com/Pseudo-Random-Number-Generator-td4026059.html#a4027617
+ */
+ /*
+ * Minimally modified by Nico Rittinghaus (nirit100)
+ */
+
+ class Random {
+    static int seed;
+    
+    function void setSeed(int newSeed) {
+        let seed = newSeed;
+        return;
+    }
+
+    /** return a random number in the range 0..32767 */
+    function int rand() {
+        let seed = seed + 20251;
+        if (seed < 0) {
+            let seed = seed - 32767 - 1;
+        }
+        return seed;
+    }
+
+    /** return a random number in the range 0..range */
+    function int randRange(int range) {
+        var int mask;
+        var int ret;
+        if (range < 1) {
+            return 0;
+        }
+        let mask = 1;
+        while (mask < range) {
+            let mask = mask * 2 + 1;
+        }
+        let ret = Random.rand() & mask;
+        while (ret > range) {
+            let ret = Random.rand() & mask;
+        }
+        return ret;
+    }
+
+}
