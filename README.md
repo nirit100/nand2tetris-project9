@@ -6,6 +6,8 @@ Check out the NAND2Tetris website if you don't know what I am talking about. It'
 
 I aimed at creating a game for the Hack-platform that is not only a good demonstration of its capabilities and limitations, but also a fun game to play. Be encouraged to try it for youself.
 
+You can find my original assignment README in the `GUIDE.txt` file -- it's in German, though. Otherwise the most important things are explained in-game.
+
 ## How to run
 
 You need a Jack VM emulator. You can get it from www.nand2tetris.org. There may be better, unofficial alternatives. Then download code by zipping or cloning it from this repo and open the `vm` sub-directory in it. Turn animations off and you're good to go. Press the play button.
