@@ -310,6 +310,7 @@ class DrawModule {
         do Output.moveCursor(COIN_TEXT_FIRSTLINE+1, COIN_TEXT_COL);
         do DrawModule.printStringD("level: ");
         do Output.printInt(coinThisRound);
+        //do DrawModule.printStringD(" x2")
         do DrawModule.printStringD("  ");
         // remove cursor
         do removeCursor();
@@ -477,8 +478,10 @@ class DrawModule {
         // draw text
         do Output.moveCursor(1, TEXT_COL);
         do DrawModule.printStringD("VOLTORB FLIP");
-        do Output.moveCursor(2, 60);
+        do Output.moveCursor(1, 60);
         do DrawModule.printStringD("~BA");
+        do Output.moveCursor(2, TEXT_COL);
+        do DrawModule.printStringD("see github.com/NiRit100/nand2tetris-project9");
         if (mode = 0) {
             do Output.moveCursor(5, TEXT_COL);
             do DrawModule.printStringD("XX FLIP Controls:");
