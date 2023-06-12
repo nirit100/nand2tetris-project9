@@ -22,7 +22,7 @@ Speaking of VM files.... You have to download the game by zipping or cloning it 
 
 (If you are using the official emulator, turn animations off and you're good to go.)
 
-Press the play button.
+Dial in your preferred execution speed and press the play button.
 
 ## About the original VoltorbFlip
 
