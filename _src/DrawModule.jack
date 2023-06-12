@@ -476,12 +476,14 @@ class DrawModule {
         do Screen.drawRectangle(x_pos, 0, 511, 240);
         do Screen.setColor(true);
         // draw text
-        do Output.moveCursor(1, TEXT_COL);
-        do DrawModule.printStringD("VOLTORB FLIP");
-        do Output.moveCursor(1, 60);
+        do Output.moveCursor(0, TEXT_COL);
+        do DrawModule.printStringD("VOLTORB FLIP v1.1");
+        do Output.moveCursor(0, 60);
         do DrawModule.printStringD("~BA");
-        do Output.moveCursor(2, TEXT_COL);
-        do DrawModule.printStringD("see github.com/NiRit100/nand2tetris-project9");
+        do Output.moveCursor(1, TEXT_COL+2);
+        do DrawModule.printStringD("see github.com/NiRit100");
+        do Output.moveCursor(2, TEXT_COL+8);
+        do DrawModule.printStringD("/nand2tetris-project9");
         if (mode = 0) {
             do Output.moveCursor(5, TEXT_COL);
             do DrawModule.printStringD("XX FLIP Controls:");
