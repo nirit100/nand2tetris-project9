@@ -297,7 +297,7 @@ class DrawModule {
     /**
      * draws the coin display
      */
-    method void drawCoin(int coin, int coinThisRound) {
+    method void drawCoin(int coin, int coinThisRound, bool timesTwo) {
         // draw icon
         var int loc;
         let loc = COIN_ICON_OFFSET_LEFT + (32 * (COIN_ICON_OFFSET_TOP-3));
@@ -310,8 +310,11 @@ class DrawModule {
         do Output.moveCursor(COIN_TEXT_FIRSTLINE+1, COIN_TEXT_COL);
         do DrawModule.printStringD("level: ");
         do Output.printInt(coinThisRound);
-        //do DrawModule.printStringD(" x2")
-        do DrawModule.printStringD("  ");
+        if (timesTwo) {
+            do DrawModule.printStringD(" x2 ");
+        } else {
+            do DrawModule.printStringD("    ");
+        }
         // remove cursor
         do removeCursor();
         return;

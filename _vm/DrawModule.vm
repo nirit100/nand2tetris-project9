@@ -7846,14 +7846,37 @@ pop temp 0
 push argument 2
 call Output.printInt 1
 pop temp 0
-push constant 2
+push argument 3
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 4
 call String.new 1
+push constant 32
+call String.appendChar 2
+push constant 120
+call String.appendChar 2
+push constant 50
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+call DrawModule.printStringD 1
+pop temp 0
+goto IF_END0
+label IF_FALSE0
+push constant 4
+call String.new 1
+push constant 32
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
 push constant 32
 call String.appendChar 2
 push constant 32
 call String.appendChar 2
 call DrawModule.printStringD 1
 pop temp 0
+label IF_END0
 push pointer 0
 call DrawModule.removeCursor 1
 pop temp 0

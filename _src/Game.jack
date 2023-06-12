@@ -114,7 +114,7 @@ class Game {
                 }
                 // redraw relevant screen and "You Won!" screen
                 do drawer.drawModeText(100, selectedCard);
-                do drawer.drawCoin(coin, coinThisRound);
+                do drawer.drawCoin(coin, coinThisRound, false);
                 do Sys.wait(2000);
                 do drawer.winScreen(coinThisRound, heartRefilled, heartWon);
                 let coin = coin + coinThisRound;
@@ -128,7 +128,7 @@ class Game {
                 // LOST THE ROUND
                 // redraw relevant screen and "You Lost!" screen
                 do drawer.drawModeText(101, selectedCard);
-                do drawer.drawCoin(coin, coinThisRound);
+                do drawer.drawCoin(coin, coinThisRound, false);
                 do Sys.wait(2000);
                 do drawer.loseScreen();
                 let hearts = hearts - 1;
@@ -159,15 +159,17 @@ class Game {
 
     /**
      * Plays a round (until won or lost)
-     * Does not affect global state except memos and
-     * selectedCard. Already includes bonus coin logic.
+     * Does not affect global state except memos, 
+     * remainingRelevantCoin and selectedCard. 
+     * Already includes bonus coin logic.
      * Handles everything input/output and computation
      * related.
      * Returns the number of coins earned in the round,
      * where 0 should be interpreted as "lost".
      */
     method int playRound() {
-        var int coinThisRound, bonusCoinThisRound;
+        var int coinThisRound, bonusCoinThisRound, bonusCoinThisRoundMax;
+        var boolean timesTwo;
         var boolean endOfRound;
         var char input;
         var int oldSelectedCard;    // remember old index to avoid unnecessary redraws
@@ -180,12 +182,14 @@ class Game {
         let redrawCards = false;
         let redrawScreen = false;
         let coinThisRound = 0;
-        let bonusCoinThisRound = countCardValue(1, cards, true, true);
+        let bonusCoinThisRoundMax = countCardValue(1, cards, true, false);
+        let bonusCoinThisRound = bonusCoinThisRoundMax;
+        let timesTwo = true;
         let currentCard = cards[selectedCard];
         // draw everything initially
         do drawer.clearScreen();
         do drawer.drawHearts(hearts, maxHearts);
-        do drawer.drawCoin(coin, coinThisRound);
+        do drawer.drawCoin(coin, coinThisRound+bonusCoinThisRound, timesTwo);
         do drawer.drawLevelText(level);
         do drawer.drawModeText(mode, selectedCard);
         do drawer.drawField(cards, selectedCard);
@@ -240,6 +244,12 @@ class Game {
             if (input = 145) {  // F5
                 let redrawScreen = true;
             }
+            // now to the mode specific inputs
+            // v1.1: quick switch FLIP to MEMO mode when V0123 keys are hit (for convenience)
+            if ((input = 86) | (input = 48) | (input = 49) | (input = 50) | (input = 51)) {
+                let mode = 1;
+                let redrawScreen = true;
+            }
             // rest goes according to mode
             if (mode = 0) {
                 // FLIP mode
@@ -257,10 +267,14 @@ class Game {
                             do currentCard.open();
                             if (currentCard.getValue() > 1) {
                                 let coinThisRound = coinThisRound + currentCard.getValue();
-                                do drawer.drawCoin(coin, coinThisRound);
+                                do drawer.drawCoin(coin, coinThisRound+bonusCoinThisRound, timesTwo);
                                 let remainingRelevantCoin = remainingRelevantCoin - currentCard.getValue();
                             } if (currentCard.getValue() = 1) {
                                 let bonusCoinThisRound = bonusCoinThisRound - 1;
+                                if (bonusCoinThisRoundMax-bonusCoinThisRound > 3) {
+                                    let timesTwo = false;
+                                }
+                                do drawer.drawCoin(coin, coinThisRound+bonusCoinThisRound, timesTwo);
                             }
                         }
                         let redrawCards = true;
@@ -271,7 +285,7 @@ class Game {
                     do Keyboard.readChar();
                     do drawer.removeCursor();
                     let redrawScreen = true;
-                } if ((input = 77) | (input = 48) | (input = 49) | (input = 50) | (input = 51)) { // M
+                } if (input = 77) { // M
                     // enter memo mode
                     let mode = 1;
                     do drawer.drawModeText(mode, selectedCard);
@@ -328,7 +342,7 @@ class Game {
             if (redrawScreen) {
                 do drawer.clearScreen();
                 do drawer.drawHearts(hearts, maxHearts);
-                do drawer.drawCoin(coin, coinThisRound);
+                do drawer.drawCoin(coin, coinThisRound+bonusCoinThisRound, timesTwo);
                 do drawer.drawLevelText(level);
                 do drawer.drawModeText(mode, selectedCard);
                 do drawer.drawField(cards, selectedCard);
@@ -344,7 +358,7 @@ class Game {
         // add bonus coin
         if (coinThisRound > 0) {
             let coinThisRound = coinThisRound + bonusCoinThisRound;
-            if (countCardValue(1, cards, true, false)-bonusCoinThisRound < 4) {
+            if (timesTwo) {
                 let coinThisRound = coinThisRound * 2;
             }
         }
@@ -452,22 +466,22 @@ class Game {
                     let budget_2s = i - minimum_3s;
                 }
             } else { if (segment = 3) {
-                    // 3 COINs
-                    let remainingRelevantCoin = remainingRelevantCoin + 3;
-                    // decrease counters
-                    let minimum_3s = minimum_3s - 1;
-                    let budget_3s = budget_3s - 1;
-                    // calculate transition to next segment
-                    if (minimum_3s < 1) {
-                        let stayInSegment = Random.randRange(budget_3s);
-                        if (stayInSegment = 0) {
-                            let segment = 1;
-                        }
+                // 3 COINs
+                let remainingRelevantCoin = remainingRelevantCoin + 3;
+                // decrease counters
+                let minimum_3s = minimum_3s - 1;
+                let budget_3s = budget_3s - 1;
+                // calculate transition to next segment
+                if (minimum_3s < 1) {
+                    let stayInSegment = Random.randRange(budget_3s);
+                    if (stayInSegment = 0) {
+                        let segment = 1;
                     }
-                    // adjust budget for better probabilities on crunch
-                    if (budget_3s > (i - minimum_1s)) {
-                        let budget_3s = i - minimum_1s;
-                    }
+                }
+                // adjust budget for better probabilities on crunch
+                if (budget_3s > (i - minimum_1s)) {
+                    let budget_3s = i - minimum_1s;
+                }
             }}}
             // generate actual card
             let cards[i] = Card.new(newValue);
@@ -510,6 +524,7 @@ class Game {
      * countAsOne   If true, each card is counted as 1,
      *              regardless of type; otherwise for each
      *              card its value will be counted
+     * onlyUnopened Count only unopened cards, duh.
      */
     method int countCardValue(int type, Array cards, boolean countAsOne, boolean onlyUnopened) {
         var Card currentCard;

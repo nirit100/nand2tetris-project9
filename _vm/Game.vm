@@ -135,7 +135,8 @@ pop temp 0
 push this 0
 push this 4
 push local 0
-call DrawModule.drawCoin 3
+push constant 0
+call DrawModule.drawCoin 4
 pop temp 0
 push constant 2000
 call Sys.wait 1
@@ -177,7 +178,8 @@ pop temp 0
 push this 0
 push this 4
 push local 0
-call DrawModule.drawCoin 3
+push constant 0
+call DrawModule.drawCoin 4
 pop temp 0
 push constant 2000
 call Sys.wait 1
@@ -232,7 +234,7 @@ call Keyboard.readChar 0
 pop temp 0
 push constant 0
 return
-function Game.playRound 8
+function Game.playRound 10
 push argument 0
 pop pointer 0
 push this 0
@@ -246,11 +248,11 @@ push constant 1
 sub
 pop this 1
 push constant 0
-pop local 2
+pop local 4
 push constant 0
-pop local 5
+pop local 7
 push constant 0
-pop local 6
+pop local 8
 push constant 0
 pop local 0
 push pointer 0
@@ -259,15 +261,19 @@ push this 8
 push constant 0
 not
 push constant 0
-not
 call Game.countCardValue 5
+pop local 2
+push local 2
 pop local 1
+push constant 0
+not
+pop local 3
 push this 1
 push this 8
 add
 pop pointer 1
 push that 0
-pop local 7
+pop local 9
 push this 0
 call DrawModule.clearScreen 1
 pop temp 0
@@ -279,7 +285,10 @@ pop temp 0
 push this 0
 push this 4
 push local 0
-call DrawModule.drawCoin 3
+push local 1
+add
+push local 3
+call DrawModule.drawCoin 4
 pop temp 0
 push this 0
 push this 5
@@ -300,28 +309,28 @@ push this 2
 call DrawModule.drawHelpText 2
 pop temp 0
 push this 0
-push local 7
+push local 9
 call DrawModule.drawFieldMemoDisplay 2
 pop temp 0
 label WHILE_EXP0
-push local 2
+push local 4
 not
 not
 if-goto WHILE_END0
 push this 1
-pop local 4
+pop local 6
 push this 0
 call DrawModule.removeCursor 1
 pop temp 0
 call Keyboard.readChar 0
-pop local 3
+pop local 5
 push this 0
 call DrawModule.removeCursor 1
 pop temp 0
-push local 3
+push local 5
 push constant 87
 eq
-push local 3
+push local 5
 push constant 131
 eq
 or
@@ -334,12 +343,12 @@ sub
 pop this 1
 push constant 0
 not
-pop local 5
+pop local 7
 label IF_FALSE0
-push local 3
+push local 5
 push constant 65
 eq
-push local 3
+push local 5
 push constant 130
 eq
 or
@@ -352,12 +361,12 @@ sub
 pop this 1
 push constant 0
 not
-pop local 5
+pop local 7
 label IF_FALSE1
-push local 3
+push local 5
 push constant 83
 eq
-push local 3
+push local 5
 push constant 133
 eq
 or
@@ -370,12 +379,12 @@ add
 pop this 1
 push constant 0
 not
-pop local 5
+pop local 7
 label IF_FALSE2
-push local 3
+push local 5
 push constant 68
 eq
-push local 3
+push local 5
 push constant 132
 eq
 or
@@ -388,7 +397,7 @@ add
 pop this 1
 push constant 0
 not
-pop local 5
+pop local 7
 label IF_FALSE3
 push this 1
 push constant 0
@@ -417,38 +426,38 @@ push this 8
 add
 pop pointer 1
 push that 0
-pop local 7
-push local 5
+pop local 9
+push local 7
 if-goto IF_TRUE6
 goto IF_FALSE6
 label IF_TRUE6
 push this 0
-push local 7
+push local 9
 push this 1
 push constant 0
 not
 call DrawModule.drawSingleCard 4
 pop temp 0
 push this 1
-push local 4
+push local 6
 eq
 not
 if-goto IF_TRUE7
 goto IF_FALSE7
 label IF_TRUE7
 push this 0
-push local 4
+push local 6
 push this 8
 add
 pop pointer 1
 push that 0
-push local 4
+push local 6
 push constant 0
 call DrawModule.drawSingleCard 4
 pop temp 0
 label IF_FALSE7
 push this 0
-push local 7
+push local 9
 call DrawModule.drawFieldMemoDisplay 2
 pop temp 0
 push this 0
@@ -457,9 +466,9 @@ push this 1
 call DrawModule.drawModeText 3
 pop temp 0
 push constant 0
-pop local 5
+pop local 7
 label IF_FALSE6
-push local 3
+push local 5
 push constant 137
 eq
 if-goto IF_TRUE8
@@ -471,7 +480,7 @@ push this 1
 call DrawModule.drawFieldAllOpen 3
 pop temp 0
 label IF_FALSE8
-push local 3
+push local 5
 push constant 136
 eq
 if-goto IF_TRUE9
@@ -483,9 +492,9 @@ add
 pop local 0
 push constant 0
 not
-pop local 2
+pop local 4
 label IF_FALSE9
-push local 3
+push local 5
 push constant 145
 eq
 if-goto IF_TRUE10
@@ -493,98 +502,148 @@ goto IF_FALSE10
 label IF_TRUE10
 push constant 0
 not
-pop local 6
+pop local 8
 label IF_FALSE10
-push this 2
-push constant 0
+push local 5
+push constant 86
 eq
+push local 5
+push constant 48
+eq
+or
+push local 5
+push constant 49
+eq
+or
+push local 5
+push constant 50
+eq
+or
+push local 5
+push constant 51
+eq
+or
 if-goto IF_TRUE11
 goto IF_FALSE11
 label IF_TRUE11
-push local 3
-push constant 32
+push constant 1
+pop this 2
+push constant 0
+not
+pop local 8
+label IF_FALSE11
+push this 2
+push constant 0
 eq
 if-goto IF_TRUE12
 goto IF_FALSE12
 label IF_TRUE12
-push this 0
-push local 7
-push this 1
-call DrawModule.cardFlipAnimation 3
-pop temp 0
-push local 7
-call Card.getValue 1
-push constant 0
+push local 5
+push constant 32
 eq
 if-goto IF_TRUE13
 goto IF_FALSE13
 label IF_TRUE13
-push local 7
+push this 0
+push local 9
+push this 1
+call DrawModule.cardFlipAnimation 3
+pop temp 0
+push local 9
+call Card.getValue 1
+push constant 0
+eq
+if-goto IF_TRUE14
+goto IF_FALSE14
+label IF_TRUE14
+push local 9
 call Card.open 1
 pop temp 0
 push constant 0
 pop local 0
 push constant 0
 not
-pop local 2
-goto IF_END13
-label IF_FALSE13
-push local 7
+pop local 4
+goto IF_END14
+label IF_FALSE14
+push local 9
 call Card.isOpen 1
 not
-if-goto IF_TRUE14
-goto IF_FALSE14
-label IF_TRUE14
-push local 7
-call Card.open 1
-pop temp 0
-push local 7
-call Card.getValue 1
-push constant 1
-gt
 if-goto IF_TRUE15
 goto IF_FALSE15
 label IF_TRUE15
+push local 9
+call Card.open 1
+pop temp 0
+push local 9
+call Card.getValue 1
+push constant 1
+gt
+if-goto IF_TRUE16
+goto IF_FALSE16
+label IF_TRUE16
 push local 0
-push local 7
+push local 9
 call Card.getValue 1
 add
 pop local 0
 push this 0
 push this 4
 push local 0
-call DrawModule.drawCoin 3
+push local 1
+add
+push local 3
+call DrawModule.drawCoin 4
 pop temp 0
 push this 3
-push local 7
+push local 9
 call Card.getValue 1
 sub
 pop this 3
-label IF_FALSE15
-push local 7
+label IF_FALSE16
+push local 9
 call Card.getValue 1
 push constant 1
-eq
-if-goto IF_TRUE16
-goto IF_FALSE16
-label IF_TRUE16
-push local 1
-push constant 1
-sub
-pop local 1
-label IF_FALSE16
-label IF_FALSE14
-push constant 0
-not
-pop local 5
-label IF_END13
-label IF_FALSE12
-push local 3
-push constant 72
 eq
 if-goto IF_TRUE17
 goto IF_FALSE17
 label IF_TRUE17
+push local 1
+push constant 1
+sub
+pop local 1
+push local 2
+push local 1
+sub
+push constant 3
+gt
+if-goto IF_TRUE18
+goto IF_FALSE18
+label IF_TRUE18
+push constant 0
+pop local 3
+label IF_FALSE18
+push this 0
+push this 4
+push local 0
+push local 1
+add
+push local 3
+call DrawModule.drawCoin 4
+pop temp 0
+label IF_FALSE17
+label IF_FALSE15
+push constant 0
+not
+pop local 7
+label IF_END14
+label IF_FALSE13
+push local 5
+push constant 72
+eq
+if-goto IF_TRUE19
+goto IF_FALSE19
+label IF_TRUE19
 push this 0
 call DrawModule.titleScreen 1
 pop temp 0
@@ -595,74 +654,15 @@ call DrawModule.removeCursor 1
 pop temp 0
 push constant 0
 not
-pop local 6
-label IF_FALSE17
-push local 3
-push constant 77
-eq
-push local 3
-push constant 48
-eq
-or
-push local 3
-push constant 49
-eq
-or
-push local 3
-push constant 50
-eq
-or
-push local 3
-push constant 51
-eq
-or
-if-goto IF_TRUE18
-goto IF_FALSE18
-label IF_TRUE18
-push constant 1
-pop this 2
-push this 0
-push this 2
-push this 1
-call DrawModule.drawModeText 3
-pop temp 0
-push this 0
-push this 2
-call DrawModule.drawHelpText 2
-pop temp 0
-label IF_FALSE18
-push local 3
-push constant 140
-eq
-if-goto IF_TRUE19
-goto IF_FALSE19
-label IF_TRUE19
-push constant 0
-not
-pop local 2
-push constant 1
-neg
-pop local 0
+pop local 8
 label IF_FALSE19
-goto IF_END11
-label IF_FALSE11
-push this 2
-push constant 1
+push local 5
+push constant 77
 eq
 if-goto IF_TRUE20
 goto IF_FALSE20
 label IF_TRUE20
-push local 3
-push constant 77
-eq
-push local 3
-push constant 32
-eq
-or
-if-goto IF_TRUE21
-goto IF_FALSE21
-label IF_TRUE21
-push constant 0
+push constant 1
 pop this 2
 push this 0
 push this 2
@@ -673,128 +673,171 @@ push this 0
 push this 2
 call DrawModule.drawHelpText 2
 pop temp 0
+label IF_FALSE20
+push local 5
+push constant 140
+eq
+if-goto IF_TRUE21
+goto IF_FALSE21
+label IF_TRUE21
+push constant 0
+not
+pop local 4
+push constant 1
+neg
+pop local 0
 label IF_FALSE21
-push local 3
-push constant 67
+goto IF_END12
+label IF_FALSE12
+push this 2
+push constant 1
 eq
 if-goto IF_TRUE22
 goto IF_FALSE22
 label IF_TRUE22
-push local 7
-call Card.erazeMemo 1
-pop temp 0
-push constant 0
-not
-pop local 5
-label IF_FALSE22
-push local 3
-push constant 48
+push local 5
+push constant 77
 eq
-push local 3
-push constant 86
+push local 5
+push constant 32
 eq
 or
 if-goto IF_TRUE23
 goto IF_FALSE23
 label IF_TRUE23
-push local 7
 push constant 0
-call Card.toggleMemo 2
-pop temp 0
-push constant 0
-not
-pop local 5
-label IF_FALSE23
-push local 3
-push constant 49
-eq
-if-goto IF_TRUE24
-goto IF_FALSE24
-label IF_TRUE24
-push local 7
-push constant 1
-call Card.toggleMemo 2
-pop temp 0
-push constant 0
-not
-pop local 5
-label IF_FALSE24
-push local 3
-push constant 50
-eq
-if-goto IF_TRUE25
-goto IF_FALSE25
-label IF_TRUE25
-push local 7
-push constant 2
-call Card.toggleMemo 2
-pop temp 0
-push constant 0
-not
-pop local 5
-label IF_FALSE25
-push local 3
-push constant 51
-eq
-if-goto IF_TRUE26
-goto IF_FALSE26
-label IF_TRUE26
-push local 7
-push constant 3
-call Card.toggleMemo 2
-pop temp 0
-push constant 0
-not
-pop local 5
-label IF_FALSE26
-label IF_FALSE20
-label IF_END11
-push local 5
-if-goto IF_TRUE27
-goto IF_FALSE27
-label IF_TRUE27
+pop this 2
 push this 0
 push this 2
 push this 1
 call DrawModule.drawModeText 3
 pop temp 0
 push this 0
+push this 2
+call DrawModule.drawHelpText 2
+pop temp 0
+label IF_FALSE23
+push local 5
+push constant 67
+eq
+if-goto IF_TRUE24
+goto IF_FALSE24
+label IF_TRUE24
+push local 9
+call Card.erazeMemo 1
+pop temp 0
+push constant 0
+not
+pop local 7
+label IF_FALSE24
+push local 5
+push constant 48
+eq
+push local 5
+push constant 86
+eq
+or
+if-goto IF_TRUE25
+goto IF_FALSE25
+label IF_TRUE25
+push local 9
+push constant 0
+call Card.toggleMemo 2
+pop temp 0
+push constant 0
+not
+pop local 7
+label IF_FALSE25
+push local 5
+push constant 49
+eq
+if-goto IF_TRUE26
+goto IF_FALSE26
+label IF_TRUE26
+push local 9
+push constant 1
+call Card.toggleMemo 2
+pop temp 0
+push constant 0
+not
+pop local 7
+label IF_FALSE26
+push local 5
+push constant 50
+eq
+if-goto IF_TRUE27
+goto IF_FALSE27
+label IF_TRUE27
+push local 9
+push constant 2
+call Card.toggleMemo 2
+pop temp 0
+push constant 0
+not
+pop local 7
+label IF_FALSE27
+push local 5
+push constant 51
+eq
+if-goto IF_TRUE28
+goto IF_FALSE28
+label IF_TRUE28
+push local 9
+push constant 3
+call Card.toggleMemo 2
+pop temp 0
+push constant 0
+not
+pop local 7
+label IF_FALSE28
+label IF_FALSE22
+label IF_END12
 push local 7
+if-goto IF_TRUE29
+goto IF_FALSE29
+label IF_TRUE29
+push this 0
+push this 2
+push this 1
+call DrawModule.drawModeText 3
+pop temp 0
+push this 0
+push local 9
 push this 1
 push constant 0
 not
 call DrawModule.drawSingleCard 4
 pop temp 0
 push this 1
-push local 4
+push local 6
 eq
 not
-if-goto IF_TRUE28
-goto IF_FALSE28
-label IF_TRUE28
+if-goto IF_TRUE30
+goto IF_FALSE30
+label IF_TRUE30
 push this 0
-push local 4
+push local 6
 push this 8
 add
 pop pointer 1
 push that 0
-push local 4
+push local 6
 push constant 0
 call DrawModule.drawSingleCard 4
 pop temp 0
-label IF_FALSE28
+label IF_FALSE30
 push this 0
-push local 7
+push local 9
 call DrawModule.drawFieldMemoDisplay 2
 pop temp 0
 push constant 0
-pop local 5
-label IF_FALSE27
-push local 3
+pop local 7
+label IF_FALSE29
+push local 5
 call Game.konami 1
-if-goto IF_TRUE29
-goto IF_FALSE29
-label IF_TRUE29
+if-goto IF_TRUE31
+goto IF_FALSE31
+label IF_TRUE31
 push this 0
 call DrawModule.drawKonami 1
 pop temp 0
@@ -805,16 +848,16 @@ call DrawModule.removeCursor 1
 pop temp 0
 push constant 0
 not
-pop local 6
+pop local 8
 push this 7
 push constant 1
 add
 pop this 7
-label IF_FALSE29
-push local 6
-if-goto IF_TRUE30
-goto IF_FALSE30
-label IF_TRUE30
+label IF_FALSE31
+push local 8
+if-goto IF_TRUE32
+goto IF_FALSE32
+label IF_TRUE32
 push this 0
 call DrawModule.clearScreen 1
 pop temp 0
@@ -826,7 +869,10 @@ pop temp 0
 push this 0
 push this 4
 push local 0
-call DrawModule.drawCoin 3
+push local 1
+add
+push local 3
+call DrawModule.drawCoin 4
 pop temp 0
 push this 0
 push this 5
@@ -847,54 +893,44 @@ push this 2
 call DrawModule.drawHelpText 2
 pop temp 0
 push this 0
-push local 7
+push local 9
 call DrawModule.drawFieldMemoDisplay 2
 pop temp 0
 push constant 0
-pop local 6
-label IF_FALSE30
+pop local 8
+label IF_FALSE32
 push this 3
 push constant 1
 lt
-if-goto IF_TRUE31
-goto IF_FALSE31
-label IF_TRUE31
+if-goto IF_TRUE33
+goto IF_FALSE33
+label IF_TRUE33
 push constant 0
 not
-pop local 2
-label IF_FALSE31
+pop local 4
+label IF_FALSE33
 goto WHILE_EXP0
 label WHILE_END0
 push local 0
 push constant 0
 gt
-if-goto IF_TRUE32
-goto IF_FALSE32
-label IF_TRUE32
+if-goto IF_TRUE34
+goto IF_FALSE34
+label IF_TRUE34
 push local 0
 push local 1
 add
 pop local 0
-push pointer 0
-push constant 1
-push this 8
-push constant 0
-not
-push constant 0
-call Game.countCardValue 5
-push local 1
-sub
-push constant 4
-lt
-if-goto IF_TRUE33
-goto IF_FALSE33
-label IF_TRUE33
+push local 3
+if-goto IF_TRUE35
+goto IF_FALSE35
+label IF_TRUE35
 push local 0
 push constant 2
 call Math.multiply 2
 pop local 0
-label IF_FALSE33
-label IF_FALSE32
+label IF_FALSE35
+label IF_FALSE34
 push this 0
 push this 8
 call DrawModule.cardFlipAnimationForRemainingCards 2
