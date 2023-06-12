@@ -18,7 +18,7 @@ You need a Jack VM emulator. You can get it from www.nand2tetris.org. There may 
 
 I'd recommend [this one](https://funkschy.github.io/nand-to-browser/) -- it runs right in your browser, you'll just have to upload the VM files.
 
-Speaking of VM files.... You have to download the game by zipping or cloning it from this repo and open the `vm` sub-directory in it.
+Speaking of VM files.... You have to download the game by zipping or cloning it from this repo and open the `vm` sub-directory in it. You might have to select the VM files manually, or just the directory, depending on the software you choose. 
 
 (If you are using the official emulator, turn animations off and you're good to go.)
 
