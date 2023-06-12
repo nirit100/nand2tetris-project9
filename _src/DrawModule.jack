@@ -297,7 +297,7 @@ class DrawModule {
     /**
      * draws the coin display
      */
-    method void drawCoin(int coin, int coinThisRound) {
+    method void drawCoin(int coin, int coinThisRound, bool timesTwo) {
         // draw icon
         var int loc;
         let loc = COIN_ICON_OFFSET_LEFT + (32 * (COIN_ICON_OFFSET_TOP-3));
@@ -310,7 +310,11 @@ class DrawModule {
         do Output.moveCursor(COIN_TEXT_FIRSTLINE+1, COIN_TEXT_COL);
         do DrawModule.printStringD("level: ");
         do Output.printInt(coinThisRound);
-        do DrawModule.printStringD("  ");
+        if (timesTwo) {
+            do DrawModule.printStringD(" x2 ");
+        } else {
+            do DrawModule.printStringD("    ");
+        }
         // remove cursor
         do removeCursor();
         return;
@@ -475,10 +479,14 @@ class DrawModule {
         do Screen.drawRectangle(x_pos, 0, 511, 240);
         do Screen.setColor(true);
         // draw text
-        do Output.moveCursor(1, TEXT_COL);
-        do DrawModule.printStringD("VOLTORB FLIP");
-        do Output.moveCursor(2, 60);
+        do Output.moveCursor(0, TEXT_COL);
+        do DrawModule.printStringD("VOLTORB FLIP v1.1");
+        do Output.moveCursor(0, 60);
         do DrawModule.printStringD("~BA");
+        do Output.moveCursor(1, TEXT_COL+2);
+        do DrawModule.printStringD("see github.com/NiRit100");
+        do Output.moveCursor(2, TEXT_COL+8);
+        do DrawModule.printStringD("/nand2tetris-project9");
         if (mode = 0) {
             do Output.moveCursor(5, TEXT_COL);
             do DrawModule.printStringD("XX FLIP Controls:");
@@ -1496,65 +1504,65 @@ class DrawModule {
         do Memory.poke(memAddress+32, 0);
         do Memory.poke(memAddress+64, -16);
         do Memory.poke(memAddress+96, 24);
-        do Memory.poke(memAddress+128, 12);
-        do Memory.poke(memAddress+160, 4);
-        do Memory.poke(memAddress+192, 4);
-        do Memory.poke(memAddress+224, -32764);
-        do Memory.poke(memAddress+256, -16380);
-        do Memory.poke(memAddress+288, -8188);
-        do Memory.poke(memAddress+320, -4092);
-        do Memory.poke(memAddress+352, -2044);
-        do Memory.poke(memAddress+384, -18428);
-        do Memory.poke(memAddress+416, -32764);
-        do Memory.poke(memAddress+448, -32764);
-        do Memory.poke(memAddress+480, -32764);
+        do Memory.poke(memAddress+128, -52);
+        do Memory.poke(memAddress+160, -28);
+        do Memory.poke(memAddress+192, -140);
+        do Memory.poke(memAddress+224, 32564);
+        do Memory.poke(memAddress+256, 16372);
+        do Memory.poke(memAddress+288, 8180);
+        do Memory.poke(memAddress+320, 4084);
+        do Memory.poke(memAddress+352, 2036);
+        do Memory.poke(memAddress+384, 18420);
+        do Memory.poke(memAddress+416, 32756);
+        do Memory.poke(memAddress+448, 32756);
+        do Memory.poke(memAddress+480, 32756);
         let memAddress = memAddress + 1;
         do Memory.poke(memAddress+0, 0);
         do Memory.poke(memAddress+32, 0);
         do Memory.poke(memAddress+64, 4095);
         do Memory.poke(memAddress+96, 6144);
-        do Memory.poke(memAddress+128, 12288);
-        do Memory.poke(memAddress+160, 8192);
-        do Memory.poke(memAddress+192, 8192);
-        do Memory.poke(memAddress+224, 8195);
-        do Memory.poke(memAddress+256, 8195);
-        do Memory.poke(memAddress+288, 8195);
-        do Memory.poke(memAddress+320, 8195);
-        do Memory.poke(memAddress+352, 8195);
-        do Memory.poke(memAddress+384, 8195);
-        do Memory.poke(memAddress+416, 8195);
-        do Memory.poke(memAddress+448, 8195);
-        do Memory.poke(memAddress+480, 8195);
+        do Memory.poke(memAddress+128, 13311);
+        do Memory.poke(memAddress+160, 10239);
+        do Memory.poke(memAddress+192, 12031);
+        do Memory.poke(memAddress+224, 11516);
+        do Memory.poke(memAddress+256, 12284);
+        do Memory.poke(memAddress+288, 12284);
+        do Memory.poke(memAddress+320, 12284);
+        do Memory.poke(memAddress+352, 12284);
+        do Memory.poke(memAddress+384, 12284);
+        do Memory.poke(memAddress+416, 12284);
+        do Memory.poke(memAddress+448, 12284);
+        do Memory.poke(memAddress+480, 12284);
         let memAddress = memAddress + 511;
-        do Memory.poke(memAddress+0, -32764);
-        do Memory.poke(memAddress+32, -32764);
-        do Memory.poke(memAddress+64, -32764);
-        do Memory.poke(memAddress+96, -32764);
-        do Memory.poke(memAddress+128, -32764);
-        do Memory.poke(memAddress+160, -32764);
-        do Memory.poke(memAddress+192, -32764);
-        do Memory.poke(memAddress+224, -16380);
-        do Memory.poke(memAddress+256, -16380);
-        do Memory.poke(memAddress+288, 4);
-        do Memory.poke(memAddress+320, 4);
-        do Memory.poke(memAddress+352, 12);
+        do Memory.poke(memAddress+0, 32756);
+        do Memory.poke(memAddress+32, 32756);
+        do Memory.poke(memAddress+64, 32756);
+        do Memory.poke(memAddress+96, 32756);
+        do Memory.poke(memAddress+128, 32756);
+        do Memory.poke(memAddress+160, 32756);
+        do Memory.poke(memAddress+192, 32756);
+        do Memory.poke(memAddress+224, 16372);
+        do Memory.poke(memAddress+256, 16180);
+        do Memory.poke(memAddress+288, -140);
+        do Memory.poke(memAddress+320, -28);
+        do Memory.poke(memAddress+352, -52);
         do Memory.poke(memAddress+384, 24);
         do Memory.poke(memAddress+416, -16);
         do Memory.poke(memAddress+448, 0);
         do Memory.poke(memAddress+480, 0);
         let memAddress = memAddress + 1;
-        do Memory.poke(memAddress+0, 8195);
-        do Memory.poke(memAddress+32, 8195);
-        do Memory.poke(memAddress+64, 8195);
-        do Memory.poke(memAddress+96, 8195);
-        do Memory.poke(memAddress+128, 8195);
-        do Memory.poke(memAddress+160, 8195);
-        do Memory.poke(memAddress+192, 8195);
-        do Memory.poke(memAddress+224, 8199);
-        do Memory.poke(memAddress+256, 8199);
-        do Memory.poke(memAddress+288, 8192);
-        do Memory.poke(memAddress+320, 8192);
-        do Memory.poke(memAddress+352, 12288);
+        do Memory.poke(memAddress+0, 12284);
+        do Memory.poke(memAddress+32, 12284);
+        do Memory.poke(memAddress+64, 12284);
+        do Memory.poke(memAddress+96, 12284);
+        do Memory.poke(memAddress+128, 12284);
+        do Memory.poke(memAddress+160, 12284);
+        do Memory.poke(memAddress+192, 12284);
+        do Memory.poke(memAddress+224, 12280);
+        do Memory.poke(memAddress+256, 11512);
+        do Memory.poke(memAddress+288, 12031);
+        do Memory.poke(memAddress+320, 10239);
+        do Memory.poke(memAddress+352, 13311);
         do Memory.poke(memAddress+384, 6144);
         do Memory.poke(memAddress+416, 4095);
         do Memory.poke(memAddress+448, 0);
@@ -1573,8 +1581,8 @@ class DrawModule {
         do Memory.poke(memAddress+64, -16);
         do Memory.poke(memAddress+96, 24);
         do Memory.poke(memAddress+128, 12);
-        do Memory.poke(memAddress+160, 4);
-        do Memory.poke(memAddress+192, 4);
+        do Memory.poke(memAddress+160, 4|96);
+        do Memory.poke(memAddress+192, 4|32);
         do Memory.poke(memAddress+224, -8188);
         do Memory.poke(memAddress+256, -2044);
         do Memory.poke(memAddress+288, -1020);
@@ -1590,8 +1598,8 @@ class DrawModule {
         do Memory.poke(memAddress+64, 4095);
         do Memory.poke(memAddress+96, 6144);
         do Memory.poke(memAddress+128, 12288);
-        do Memory.poke(memAddress+160, 8192);
-        do Memory.poke(memAddress+192, 8192);
+        do Memory.poke(memAddress+160, 8192|1536);
+        do Memory.poke(memAddress+192, 8192|1024);
         do Memory.poke(memAddress+224, 8199);
         do Memory.poke(memAddress+256, 8223);
         do Memory.poke(memAddress+288, 8255);
@@ -1611,8 +1619,8 @@ class DrawModule {
         do Memory.poke(memAddress+192, -508);
         do Memory.poke(memAddress+224, -508);
         do Memory.poke(memAddress+256, -508);
-        do Memory.poke(memAddress+288, 4);
-        do Memory.poke(memAddress+320, 4);
+        do Memory.poke(memAddress+288, 4|32);
+        do Memory.poke(memAddress+320, 4|96);
         do Memory.poke(memAddress+352, 12);
         do Memory.poke(memAddress+384, 24);
         do Memory.poke(memAddress+416, -16);
@@ -1628,8 +1636,8 @@ class DrawModule {
         do Memory.poke(memAddress+192, 8319);
         do Memory.poke(memAddress+224, 8319);
         do Memory.poke(memAddress+256, 8319);
-        do Memory.poke(memAddress+288, 8192);
-        do Memory.poke(memAddress+320, 8192);
+        do Memory.poke(memAddress+288, 8192|1024);
+        do Memory.poke(memAddress+320, 8192|1536);
         do Memory.poke(memAddress+352, 12288);
         do Memory.poke(memAddress+384, 6144);
         do Memory.poke(memAddress+416, 4095);
@@ -1649,8 +1657,8 @@ class DrawModule {
         do Memory.poke(memAddress+64, -16);
         do Memory.poke(memAddress+96, 24);
         do Memory.poke(memAddress+128, 12);
-        do Memory.poke(memAddress+160, 4);
-        do Memory.poke(memAddress+192, 4);
+        do Memory.poke(memAddress+160, 4|96);
+        do Memory.poke(memAddress+192, 4|32);
         do Memory.poke(memAddress+224, -8188);
         do Memory.poke(memAddress+256, -2044);
         do Memory.poke(memAddress+288, -508);
@@ -1666,8 +1674,8 @@ class DrawModule {
         do Memory.poke(memAddress+64, 4095);
         do Memory.poke(memAddress+96, 6144);
         do Memory.poke(memAddress+128, 12288);
-        do Memory.poke(memAddress+160, 8192);
-        do Memory.poke(memAddress+192, 8192);
+        do Memory.poke(memAddress+160, 8192|1536);
+        do Memory.poke(memAddress+192, 8192|1024);
         do Memory.poke(memAddress+224, 8199);
         do Memory.poke(memAddress+256, 8223);
         do Memory.poke(memAddress+288, 8255);
@@ -1687,8 +1695,8 @@ class DrawModule {
         do Memory.poke(memAddress+192, -508);
         do Memory.poke(memAddress+224, -2044);
         do Memory.poke(memAddress+256, -8188);
-        do Memory.poke(memAddress+288, 4);
-        do Memory.poke(memAddress+320, 4);
+        do Memory.poke(memAddress+288, 4|32);
+        do Memory.poke(memAddress+320, 4|96);
         do Memory.poke(memAddress+352, 12);
         do Memory.poke(memAddress+384, 24);
         do Memory.poke(memAddress+416, -16);
@@ -1704,8 +1712,8 @@ class DrawModule {
         do Memory.poke(memAddress+192, 8255);
         do Memory.poke(memAddress+224, 8223);
         do Memory.poke(memAddress+256, 8199);
-        do Memory.poke(memAddress+288, 8192);
-        do Memory.poke(memAddress+320, 8192);
+        do Memory.poke(memAddress+288, 8192|1024);
+        do Memory.poke(memAddress+320, 8192|1536);
         do Memory.poke(memAddress+352, 12288);
         do Memory.poke(memAddress+384, 6144);
         do Memory.poke(memAddress+416, 4095);
