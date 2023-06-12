@@ -14,7 +14,15 @@ You can find my original assignment README in the `GUIDE.txt` file -- it's in Ge
 
 ## How to run
 
-You need a Jack VM emulator. You can get it from www.nand2tetris.org. There may be better, unofficial alternatives. Then download code by zipping or cloning it from this repo and open the `vm` sub-directory in it. Turn animations off and you're good to go. Press the play button.
+You need a Jack VM emulator. You can get it from www.nand2tetris.org. There may be better, unofficial alternatives. 
+
+I'd recommend [this one](https://funkschy.github.io/nand-to-browser/) -- it runs right in your browser, you'll just have to upload the VM files.
+
+Speaking of VM files.... You have to download the game by zipping or cloning it from this repo and open the `vm` sub-directory in it.
+
+(If you are using the official emulator, turn animations off and you're good to go.)
+
+Press the play button.
 
 ## About the original VoltorbFlip
 
