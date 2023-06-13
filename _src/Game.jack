@@ -246,7 +246,7 @@ class Game {
             }
             // now to the mode specific inputs
             // v1.1: quick switch FLIP to MEMO mode when V0123 keys are hit (for convenience)
-            if ((input = 86) | (input = 48) | (input = 49) | (input = 50) | (input = 51)) {
+            if ((mode = 0) & ((input = 86) | (input = 48) | (input = 49) | (input = 50) | (input = 51))) {
                 let mode = 1;
                 let redrawScreen = true;
             }

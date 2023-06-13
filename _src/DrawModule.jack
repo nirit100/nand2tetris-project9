@@ -72,7 +72,7 @@ class DrawModule {
         let MEMO_TEXT_LINE          =  22;
         let MEMO_TEXT_COL           =  34;
         let MEMO_DISP_OFFSET_TOP    = 243;
-        let MEMO_DISP_OFFSET_LEFT   =  24;
+        let MEMO_DISP_OFFSET_LEFT   =  25;
         let CURSOR_RESTING_POS_LINE =  22;
         let CURSOR_RESTING_POS_COL  =   0;
         return this;
@@ -287,7 +287,7 @@ class DrawModule {
         do DrawModule.printStringD("Hearts: ");
         do Output.printInt(hearts);
         do Output.moveCursor(HEART_TEXT_FIRSTLINE+1, HEART_TEXT_COL);
-        do DrawModule.printStringD("out of ");
+        do DrawModule.printStringD(" out of ");
         do Output.printInt(maxHearts);
         // remove cursor 
         do removeCursor();
@@ -306,7 +306,7 @@ class DrawModule {
         do Output.moveCursor(COIN_TEXT_FIRSTLINE, COIN_TEXT_COL);
         do DrawModule.printStringD("total: ");
         do Output.printInt(coin);
-        do DrawModule.printStringD("     ");
+        //do DrawModule.printStringD("  ");
         do Output.moveCursor(COIN_TEXT_FIRSTLINE+1, COIN_TEXT_COL);
         do DrawModule.printStringD("level: ");
         do Output.printInt(coinThisRound);
@@ -557,7 +557,7 @@ class DrawModule {
         // draw memo text and display
         if (~card.isOpen()) {
             do Output.moveCursor(MEMO_TEXT_LINE, MEMO_TEXT_COL);
-            do DrawModule.printStringD("Card's memos:");
+            do DrawModule.printStringD("- Card's memos:");
             do removeCursor();
             do DrawModule.drawFieldMemoDisplay32(location, card.hasMemo(0), card.hasMemo(1), card.hasMemo(2), card.hasMemo(3));
         }

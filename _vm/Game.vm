@@ -504,6 +504,9 @@ push constant 0
 not
 pop local 8
 label IF_FALSE10
+push this 2
+push constant 0
+eq
 push local 5
 push constant 86
 eq
@@ -523,6 +526,7 @@ push local 5
 push constant 51
 eq
 or
+and
 if-goto IF_TRUE11
 goto IF_FALSE11
 label IF_TRUE11
